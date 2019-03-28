@@ -1,12 +1,17 @@
 package com.facebook.lead;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 
@@ -36,26 +41,9 @@ public class BulkRead {
 			in.close();
 			con.disconnect();
 			System.out.println(content);
-			/*
-			 * Map<String, String> input = mapper.readValue(content.toString(), new
-			 * TypeReference<Map<String, String>>() { });
-			 * System.out.println("Form ID "+input.get("id"));
-			 * System.out.println(input.get("leadgen_export_csv_url")); String csvURL =
-			 * input.get("leadgen_export_csv_url"); URL csvUrl = new URL(csvURL); con =
-			 * (HttpsURLConnectionImpl) csvUrl.openConnection();
-			 * con.setRequestProperty("User-Agent", USER_AGENT);
-			 * 
-			 * responseCode = con.getResponseCode();
-			 * System.out.println("\nSending 'GET' request to URL : " + url);
-			 * System.out.println("Response Code : " + responseCode);
-			 * 
-			 * in = new BufferedReader(new InputStreamReader(con.getInputStream())); content
-			 * = new StringBuffer(); while ((inputLine = in.readLine()) != null) {
-			 * content.append(inputLine); } in.close(); con.disconnect();
-			 * //System.out.println(content); // input =
-			 * mapper.readValue(content.toString(), new TypeReference<Map<String, String>>()
-			 * { // });
-			 */
+			ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+			writer.writeValue(new File("D:/facebookwebhook/leadInfo.json"), mapper.readValue(content.toString(), new TypeReference<Map<String, Object>>() { }));
+
 		} catch (MalformedURLException e1) {
 			e1.printStackTrace();
 		} catch (IOException e) {
